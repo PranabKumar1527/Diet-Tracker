@@ -1,14 +1,24 @@
-import os
+from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
+from routers import auth
 from dotenv import load_dotenv
-from supabase import create_client, Client
 
 load_dotenv()
 
-url = os.environ.get("SUPABASE_URL")
-key = os.environ.get("SUPABASE_SERVICE_KEY")
+app = FastAPI(title="Diet Tracker API")
 
-supabase: Client = create_client(url, key)
+# Allow frontend to talk to backend
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:3000"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
-response = supabase.table("users").select("*").execute()
-print("Connection successful!")
-print(response)
+# Register routers
+app.include_router(auth.router, prefix="/auth", tags=["Authentication"])
+
+@app.get("/")
+async def root():
+    return {"message": "Diet Tracker API is running"}
