@@ -1,0 +1,17 @@
+INDIAN_FOODS = [
+    {"name": "Roti", "calories": 71, "protein": 2.5, "carbs": 15, "fat": 0.4, "fiber": 2.0, "description": "Whole wheat Indian flatbread"},
+    {"name": "Chapati", "calories": 71, "protein": 2.5, "carbs": 15, "fat": 0.4, "fiber": 2.0, "description": "Whole wheat Indian flatbread"},
+    {"name": "Naan", "calories": 262, "protein": 9, "carbs": 45, "fat": 5, "fiber": 2, "description": "Leavened Indian bread"},
+    {"name": "Rice cooked", "calories": 130, "protein": 2.7, "carbs": 28, "fat": 0.3, "fiber": 0.4, "description": "White rice cooked"},
+    {"name": "Dal Tadka", "calories": 104, "protein": 7, "carbs": 18, "fat": 1, "fiber": 8, "description": "Yellow lentils tempered with spices"},
+    {"name": "Curd", "calories": 60, "protein": 3.5, "carbs": 4.7, "fat": 3.3, "fiber": 0, "description": "Plain yogurt"},
+    {"name": "Paneer", "calories": 265, "protein": 18, "carbs": 1.2, "fat": 20, "fiber": 0, "description": "Indian cottage cheese"},
+    {"name": "Chicken Curry", "calories": 180, "protein": 25, "carbs": 5, "fat": 8, "fiber": 1, "description": "Chicken cooked in Indian spices"},
+    {"name": "Egg boiled", "calories": 68, "protein": 6, "carbs": 0.6, "fat": 4.8, "fiber": 0, "description": "One boiled egg"},
+    {"name": "Idli", "calories": 39, "protein": 2, "carbs": 8, "fat": 0.1, "fiber": 0.3, "description": "Steamed rice cake"},
+    {"name": "Dosa", "calories": 133, "protein": 3, "carbs": 25, "fat": 2, "fiber": 1, "description": "Fermented rice and lentil crepe"},
+    {"name": "Paratha", "calories": 126, "protein": 3, "carbs": 18, "fat": 5, "fiber": 2, "description": "Layered Indian flatbread"},
+    {"name": "Samosa", "calories": 252, "protein": 6, "carbs": 38, "fat": 9, "fiber": 3, "description": "Fried pastry with savory filling"},
+    {"name": "Poha", "calories": 180, "protein": 4, "carbs": 35, "fat": 3, "fiber": 2, "description": "Flattened rice dish"},
+    {"name": "Upma", "calories": 150, "protein": 4, "carbs": 24, "fat": 5, "fiber": 2, "description": "Semolina porridge"},
+]

@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import { updateGoals } from '../utils/api';
+import logo from '../Logo.png';
 
 const GOALS = [
   { id: 'Fat Loss', label: 'Fat Loss', icon: '🔥', desc: 'Burn fat and reduce body weight' },
@@ -37,7 +38,7 @@ export default function GoalSelection() {
     setLoading(true);
     try {
       await updateGoals({ user_id, goals: selected });
-      toast.success('Goals saved successfully!');
+      toast.success('Goals saved! Welcome to Diet Tracker 🎉');
       navigate('/dashboard');
     } catch (error) {
       toast.error('Failed to save goals. Please try again.');
@@ -47,40 +48,58 @@ export default function GoalSelection() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
-      <div className="bg-white rounded-2xl shadow-lg p-8 w-full max-w-lg">
+    <div className="min-h-screen bg-gray-950 flex items-center justify-center p-4 relative overflow-hidden">
 
-        <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-green-600">Your Goals</h1>
-          <p className="text-gray-500 mt-1">Select one or more goals</p>
+      {/* Background glow */}
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-96 h-96 bg-green-500/10 rounded-full blur-3xl" />
+
+      <div className="relative z-10 w-full max-w-lg">
+
+        <div className="bg-gray-900 border border-gray-800 rounded-2xl p-8 shadow-2xl">
+
+          {/* Header */}
+          <div className="text-center mb-8">
+            <img src={logo} alt="Logo" className="h-14 w-14 object-contain mx-auto mb-4" />
+            <h1 className="text-3xl font-black text-white">Your Goals</h1>
+            <p className="text-gray-400 text-sm mt-2">
+              Select one or more goals. You can always change these later.
+            </p>
+          </div>
+
+          {/* Goal Cards */}
+          <div className="grid grid-cols-2 gap-4 mb-8">
+            {GOALS.map(goal => (
+              <div key={goal.id} onClick={() => toggleGoal(goal.id)}
+                className={`cursor-pointer rounded-xl border-2 p-5 transition-all duration-200 
+                  ${selected.includes(goal.id)
+                    ? 'border-green-500 bg-green-500/10 shadow-lg shadow-green-500/10'
+                    : 'border-gray-700 bg-gray-800 hover:border-gray-600'
+                  }`}>
+                <div className="text-3xl mb-3">{goal.icon}</div>
+                <div className={`font-bold text-base mb-1 ${selected.includes(goal.id) ? 'text-green-400' : 'text-white'}`}>
+                  {goal.label}
+                </div>
+                <div className="text-xs text-gray-400 leading-relaxed">{goal.desc}</div>
+                {selected.includes(goal.id) && (
+                  <div className="mt-2 text-green-400 text-xs font-bold">✓ Selected</div>
+                )}
+              </div>
+            ))}
+          </div>
+
+          {/* Submit */}
+          <button onClick={handleSubmit} disabled={loading || selected.length === 0}
+            className="w-full bg-green-500 text-white py-3 rounded-xl font-bold text-lg hover:bg-green-400 transition-all duration-200 disabled:opacity-40 shadow-lg shadow-green-500/25">
+            {loading ? 'Saving...' : `Complete Setup →`}
+          </button>
+
+          {selected.length > 0 && (
+            <p className="text-center text-gray-500 text-xs mt-3">
+              {selected.length} goal{selected.length > 1 ? 's' : ''} selected
+            </p>
+          )}
+
         </div>
-
-        <div className="grid grid-cols-2 gap-4 mb-8">
-          {GOALS.map(goal => (
-            <div
-              key={goal.id}
-              onClick={() => toggleGoal(goal.id)}
-              className={`cursor-pointer rounded-xl border-2 p-4 transition duration-200 
-                ${selected.includes(goal.id)
-                  ? 'border-green-500 bg-green-50'
-                  : 'border-gray-200 hover:border-green-300'
-                }`}
-            >
-              <div className="text-3xl mb-2">{goal.icon}</div>
-              <div className="font-semibold text-gray-800">{goal.label}</div>
-              <div className="text-sm text-gray-500 mt-1">{goal.desc}</div>
-            </div>
-          ))}
-        </div>
-
-        <button
-          onClick={handleSubmit}
-          disabled={loading}
-          className="w-full bg-green-600 text-white py-3 rounded-lg font-semibold hover:bg-green-700 transition duration-200 disabled:opacity-50"
-        >
-          {loading ? 'Saving...' : 'Complete Registration →'}
-        </button>
-
       </div>
     </div>
   );

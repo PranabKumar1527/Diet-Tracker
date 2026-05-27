@@ -5,5 +5,6 @@ const API = axios.create({
 });
 
 export const registerUser = (data) => API.post('/auth/register', data);
-export const verifyEmail = (token) => API.get(`/auth/verify?token=${token}`);
+export const loginUser = (data) => API.post('/auth/login', data);
 export const updateGoals = (data) => API.post('/auth/update-goals', data);
+export const verifyEmail = (token) => API.get(`/auth/verify?token=${token}`);

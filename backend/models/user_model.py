@@ -12,6 +12,7 @@ class UserRegister(BaseModel):
     activity_level: str
     weight_kg: float
     height_cm: float
+    password: str
 
     @field_validator("full_name")
     def validate_name(cls, v):
@@ -70,6 +71,12 @@ class UserRegister(BaseModel):
     def validate_height(cls, v):
         if v < 50 or v > 250:
             raise ValueError("Height must be between 50 cm and 250 cm")
+        return v
+
+    @field_validator("password")
+    def validate_password(cls, v):
+        if len(v) < 8:
+            raise ValueError("Password must be at least 8 characters")
         return v
 
 
