@@ -7,6 +7,7 @@ from argon2.exceptions import VerifyMismatchError
 import os
 from datetime import date
 from utils.ai_parser import FoodParser
+from utils.tdee_calculator import calculate_tdee
 
 load_dotenv()
 
@@ -182,3 +183,157 @@ async def update_goals(data: GoalUpdate):
         raise HTTPException(status_code=404, detail="User not found")
 
     return {"message": "Goals updated successfully"}
+
+@router.get("/user-profile/{user_id}")
+async def get_user_profile(user_id: str):
+    """Get user profile with calculated targets"""
+    result = supabase.table("users").select("*").eq("id", user_id).execute()
+
+    if not result.data:
+        raise HTTPException(status_code=404, detail="User not found")
+
+    user = result.data[0]
+
+    # Calculate targets
+    targets = calculate_tdee(
+        weight_kg=user.get("weight_kg", 70),
+        height_cm=user.get("height_cm", 170),
+        age=user.get("age", 25),
+        sex=user.get("sex", "Male"),
+        activity_level=user.get("activity_level", "Sedentary"),
+        goals=user.get("goal", [])
+    )
+
+    # Save targets to database
+    existing = supabase.table("daily_targets").select("*").eq("user_id", user_id).execute()
+    if existing.data:
+        supabase.table("daily_targets").update(targets).eq("user_id", user_id).execute()
+    else:
+        supabase.table("daily_targets").insert({**targets, "user_id": user_id}).execute()
+
+    return {
+        "user": user,
+        "targets": targets
+    }
+
+
+@router.post("/generate-meal")
+async def generate_meal(data: dict):
+    """Generate AI meal suggestion"""
+    user_id = data.get("user_id")
+    meal_type = data.get("meal_type", "Breakfast")
+    special_notes = data.get("special_notes", "")
+
+    if not user_id:
+        raise HTTPException(status_code=400, detail="user_id required")
+
+    # Get user profile
+    user_result = supabase.table("users").select("*").eq("id", user_id).execute()
+    if not user_result.data:
+        raise HTTPException(status_code=404, detail="User not found")
+
+    user = user_result.data[0]
+
+    # Get targets
+    targets = calculate_tdee(
+        weight_kg=user.get("weight_kg", 70),
+        height_cm=user.get("height_cm", 170),
+        age=user.get("age", 25),
+        sex=user.get("sex", "Male"),
+        activity_level=user.get("activity_level", "Sedentary"),
+        goals=user.get("goal", [])
+    )
+
+    user_profile = {**user, **targets}
+
+    # Generate meal suggestion
+    suggestion = food_parser.generate_meal_suggestion(
+        meal_type=meal_type,
+        user_profile=user_profile,
+        special_notes=special_notes
+    )
+
+    return {
+        "meal_type": meal_type,
+        "suggestion": suggestion
+    }
+
+
+@router.get("/weekly-summary/{user_id}")
+async def get_weekly_summary(user_id: str):
+    """Get weekly food summary"""
+    from datetime import date, timedelta
+
+    today = date.today()
+    monday = today - timedelta(days=today.weekday())
+
+    weekly_data = []
+    days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
+
+    for i in range(7):
+        day_date = monday + timedelta(days=i)
+        result = supabase.table("food_logs").select("*").eq(
+            "user_id", user_id
+        ).eq("log_date", str(day_date)).execute()
+
+        logs = result.data
+        total_calories = sum(log.get("calories", 0) for log in logs)
+        total_protein = sum(log.get("protein_gm", 0) for log in logs)
+
+        weekly_data.append({
+            "day": days[i],
+            "date": str(day_date),
+            "calories": round(total_calories, 1),
+            "protein_gm": round(total_protein, 1),
+            "logs_count": len(logs)
+        })
+
+    return {"weekly_data": weekly_data}
+
+
+@router.post("/ai-chat")
+async def ai_chat(data: dict):
+    """Chat with AI nutrition assistant"""
+    message = data.get("message")
+    user_id = data.get("user_id")
+
+    if not message:
+        raise HTTPException(status_code=400, detail="message required")
+
+    # Get user context
+    user_result = supabase.table("users").select("*").eq("id", user_id).execute()
+    user = user_result.data[0] if user_result.data else {}
+
+    # Get today's logs
+    from datetime import date
+    today = str(date.today())
+    logs_result = supabase.table("food_logs").select("*").eq(
+        "user_id", user_id
+    ).eq("log_date", today).execute()
+
+    logs_summary = "\n".join([
+        f"- {log.get('meal_type')}: {log.get('food_description')} ({log.get('calories')} kcal)"
+        for log in logs_result.data
+    ]) if logs_result.data else "No food logged today"
+
+    prompt = f"""You are a friendly AI nutrition assistant for Diet Tracker app.
+
+USER PROFILE:
+- Name: {user.get('full_name', 'User')}
+- Goals: {', '.join(user.get('goal', []))}
+- Activity: {user.get('activity_level', 'Unknown')}
+
+TODAY'S FOOD LOG:
+{logs_summary}
+
+USER MESSAGE: {message}
+
+Respond helpfully and concisely as a nutrition expert. Keep response under 150 words."""
+
+    from mcp.nutrition_api import NutritionMCP
+    try:
+        from utils.ai_parser import call_groq, clean_ai_text
+        response = clean_ai_text(call_groq(prompt))
+        return {"response": response}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))

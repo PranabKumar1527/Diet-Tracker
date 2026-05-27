@@ -10,6 +10,15 @@ load_dotenv()
 GROQ_API_KEY = os.environ.get("GROQ_API_KEY")
 GROQ_URL = "https://api.groq.com/openai/v1/chat/completions"
 
+def clean_ai_text(text: str) -> str:
+    """Remove markdown formatting from AI responses"""
+    import re
+    text = re.sub(r'\*\*(.*?)\*\*', r'\1', text)
+    text = re.sub(r'\*(.*?)\*', r'\1', text)
+    text = re.sub(r'#{1,6}\s', '', text)
+    text = re.sub(r'`(.*?)`', r'\1', text)
+    text = text.strip()
+    return text
 
 def call_groq(prompt: str):
     """Make direct HTTP call to Groq API"""
@@ -70,7 +79,7 @@ class FoodParser:
     def generate_meal_suggestion(self, meal_type: str, user_profile: dict, special_notes: str = ""):
         """Generate meal suggestion using AI"""
 
-        prompt = f"""You are a professional nutritionist and diet expert.
+        prompt = f"""You are a professional nutritionist and diet expert. 
 
 USER PROFILE:
 - Age: {user_profile.get('age', 'Unknown')}
@@ -88,10 +97,10 @@ SPECIAL NOTES: {special_notes if special_notes else 'None'}
 Generate a detailed {meal_type} meal plan for this user.
 Include specific food items with quantities, calories and protein for each item,
 why this meal suits their goals, and a total nutrition summary.
-Format your response in a clear friendly way."""
+Format your response simply and clearly without any markdown, bullet symbols, or special characters. Use plain numbered lists and simple text only. Keep it concise and practical."""
 
         try:
-            return call_groq(prompt)
+            return clean_ai_text(call_groq(prompt))
         except Exception as e:
             return f"Could not generate meal suggestion: {str(e)}"
 
@@ -126,7 +135,7 @@ What should they focus on for remaining meals?
 Keep it friendly and encouraging."""
 
         try:
-            return call_groq(prompt)
+            return clean_ai_text(call_groq(prompt))
         except Exception as e:
             return "Keep tracking your meals to get AI insights!"
 
