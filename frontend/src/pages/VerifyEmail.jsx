@@ -7,8 +7,9 @@ export default function VerifyEmail() {
   const navigate = useNavigate();
   const [status, setStatus] = useState('verifying');
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
-    const token = searchParams.get('token');
+      const token = searchParams.get('token');
 
     if (!token) {
       setStatus('waiting');
