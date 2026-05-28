@@ -34,6 +34,7 @@ export default function Login() {
 
   return (
     <div className="min-h-screen bg-gray-950 flex items-center justify-center p-4 relative overflow-hidden">
+      <div className="relative z-10 w-full max-w-md my-4">
 
       {/* Background glow effects */}
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-96 h-96 bg-green-500/10 rounded-full blur-3xl" />
@@ -110,6 +111,8 @@ export default function Login() {
 
           </form>
         </div>
+      </div>
+    
       </div>
     </div>
   );

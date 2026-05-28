@@ -41,20 +41,20 @@ export default function Landing() {
 
       {/* Navbar */}
       <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
-        scrollY > 50 ? 'bg-gray-950/95 backdrop-blur-md shadow-lg shadow-black/20' : 'bg-transparent'
+        scrollY > 50 ? 'bg-gray-950/95 backdrop-blur-md shadow-lg' : 'bg-transparent'
       }`}>
-        <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <img src={logo} alt="Diet Tracker" className="h-10 w-10 object-contain" />
-            <span className="font-bold text-xl text-white tracking-wide">Diet Tracker</span>
+        <div className="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <img src={logo} alt="Diet Tracker" className="h-8 w-8 object-contain" />
+            <span className="font-bold text-lg text-white">Diet Tracker</span>
           </div>
-          <div className="flex gap-3">
+          <div className="flex gap-2">
             <button onClick={() => navigate('/login')}
-              className="px-6 py-2 rounded-full border border-green-500 text-green-400 font-semibold hover:bg-green-500/10 transition-all duration-200">
+              className="px-4 py-2 rounded-full border border-green-500 text-green-400 font-semibold hover:bg-green-500/10 transition text-sm">
               Sign In
             </button>
             <button onClick={() => navigate('/register')}
-              className="px-6 py-2 rounded-full bg-green-500 text-white font-semibold hover:bg-green-400 transition-all duration-200 shadow-lg shadow-green-500/25">
+              className="px-4 py-2 rounded-full bg-green-500 text-white font-semibold hover:bg-green-400 transition text-sm">
               Sign Up
             </button>
           </div>
@@ -86,13 +86,13 @@ export default function Landing() {
           <div className="inline-block bg-green-500/20 border border-green-500/30 text-green-400 text-sm font-semibold px-4 py-1.5 rounded-full mb-6 backdrop-blur-sm">
             🚀 AI-Powered Nutrition Tracking
           </div>
-          <h1 className="text-6xl md:text-8xl font-black text-white mb-3 leading-none tracking-tight">
+          <h1 className="text-4xl md:text-6xl lg:text-8xl font-black text-white mb-3 leading-none tracking-tight">
             Diet Tracker
           </h1>
-          <p className="text-green-400 text-xl md:text-2xl font-semibold tracking-widest uppercase mb-6">
+          <p className="text-green-400 text-base md:text-xl lg:text-2xl font-semibold tracking-widest uppercase mb-4">
             Track . Plan . Improve
           </p>
-          <p className="text-gray-300 text-lg md:text-xl mb-10 max-w-2xl mx-auto leading-relaxed">
+          <p className="text-gray-300 text-base md:text-lg mb-8 max-w-2xl mx-auto leading-relaxed px-4">
             Your AI-powered personal nutrition coach. Log food in plain language,
             get personalised targets, and crush your health goals.
           </p>

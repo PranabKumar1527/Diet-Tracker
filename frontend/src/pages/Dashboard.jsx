@@ -26,6 +26,7 @@ export default function Dashboard() {
   const [mealGenType, setMealGenType] = useState('Breakfast');
   const [specialNotes, setSpecialNotes] = useState('');
   const [generating, setGenerating] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [chatMessages, setChatMessages] = useState([
     { role: 'ai', text: 'Hi! I am your AI nutrition assistant. Ask me anything about your diet, nutrition, or health goals!' }
   ]);
@@ -145,13 +146,13 @@ export default function Dashboard() {
 
       {/* Navbar */}
       <nav className="bg-gray-900 border-b border-gray-800 sticky top-0 z-50">
-        <div className="max-w-7xl mx-auto px-6 py-3 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <img src={logo} alt="Logo" className="h-8 w-8 object-contain" />
-            <span className="font-bold text-green-400">Diet Tracker</span>
+        <div className="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <img src={logo} alt="Logo" className="h-7 w-7 object-contain" />
+            <span className="font-bold text-green-400 text-sm">Diet Tracker</span>
           </div>
 
-          {/* Tabs */}
+          {/* Desktop Tabs */}
           <div className="hidden md:flex gap-1">
             {tabs.map(tab => (
               <button key={tab} onClick={() => setActiveTab(tab)}
@@ -160,20 +161,52 @@ export default function Dashboard() {
                     ? 'bg-green-500 text-white'
                     : 'text-gray-400 hover:text-white hover:bg-gray-800'
                 }`}>
-                {tab === 'nutrition' ? 'Nutrition Tracker' :
-                 tab === 'meals' ? 'Food & Meals' : tab.charAt(0).toUpperCase() + tab.slice(1)}
+                {tab === 'nutrition' ? 'Nutrition' :
+                tab === 'meals' ? 'Food & Meals' :
+                tab.charAt(0).toUpperCase() + tab.slice(1)}
               </button>
             ))}
           </div>
 
-          <div className="flex items-center gap-3">
-            <span className="text-gray-400 text-sm hidden md:block">{fullName}</span>
+          <div className="flex items-center gap-2">
+            <span className="text-gray-400 text-xs hidden md:block">{fullName}</span>
             <button onClick={handleLogout}
-              className="text-gray-400 hover:text-red-400 text-sm transition-colors">
+              className="text-gray-400 hover:text-red-400 text-xs transition-colors hidden md:block">
               Logout
+            </button>
+            {/* Mobile Menu Button */}
+            <button onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              className="md:hidden text-gray-400 hover:text-white p-2">
+              {mobileMenuOpen ? '✕' : '☰'}
             </button>
           </div>
         </div>
+
+        {/* Mobile Menu Dropdown */}
+        {mobileMenuOpen && (
+          <div className="md:hidden bg-gray-900 border-t border-gray-800 px-4 py-3 space-y-1">
+            {tabs.map(tab => (
+              <button key={tab}
+                onClick={() => { setActiveTab(tab); setMobileMenuOpen(false); }}
+                className={`w-full text-left px-4 py-3 rounded-xl text-sm font-semibold capitalize transition-all ${
+                  activeTab === tab
+                    ? 'bg-green-500 text-white'
+                    : 'text-gray-400 hover:text-white hover:bg-gray-800'
+                }`}>
+                {tab === 'nutrition' ? 'Nutrition Tracker' :
+                tab === 'meals' ? 'Food & Meals' :
+                tab.charAt(0).toUpperCase() + tab.slice(1)}
+              </button>
+            ))}
+            <div className="border-t border-gray-800 pt-2 mt-2">
+              <p className="text-gray-500 text-xs px-4 mb-2">{fullName}</p>
+              <button onClick={handleLogout}
+                className="w-full text-left px-4 py-3 rounded-xl text-sm font-semibold text-red-400 hover:bg-gray-800 transition-all">
+                Logout
+              </button>
+            </div>
+          </div>
+        )}
       </nav>
 
       <div className="max-w-7xl mx-auto px-6 py-8">
@@ -191,7 +224,7 @@ export default function Dashboard() {
             </div>
 
             {/* Today's Intake Cards */}
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
               {[
                 { label: 'Calories', consumed: consumed.calories || 0, target: targets?.calories || 2000, unit: 'kcal', color: 'green' },
                 { label: 'Protein', consumed: consumed.protein_gm || 0, target: targets?.protein_gm || 150, unit: 'g', color: 'blue' },
@@ -286,8 +319,8 @@ export default function Dashboard() {
             {weeklySummary && (
               <div className="bg-gray-900 border border-gray-800 rounded-2xl p-6">
                 <h2 className="text-xl font-bold text-white mb-4">📅 This Week's Summary</h2>
-                <div className="overflow-x-auto">
-                  <table className="w-full text-sm">
+                <div className="overflow-x-auto -mx-2">
+                  <table className="w-full text-sm min-w-96">
                     <thead>
                       <tr className="text-gray-400 border-b border-gray-800">
                         <th className="text-left py-2 pr-4">Day</th>
