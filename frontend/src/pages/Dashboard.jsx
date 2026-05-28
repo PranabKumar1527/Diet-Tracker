@@ -272,7 +272,7 @@ export default function Dashboard() {
                 </div>
                 {dailySummary?.logs?.[dailySummary.logs.length - 1]?.ai_review && (
                   <div className="mt-4 bg-green-500/10 border border-green-500/30 rounded-xl p-4">
-                    <p className="text-green-400 text-sm font-semibold mb-1">🤖 AI Review</p>
+                    <p className="text-green-400 text-sm font-semibold mb-1">🤖 Diet Tracker review</p>
                     <p className="text-gray-300 text-sm">
                       {dailySummary.logs[dailySummary.logs.length - 1].ai_review}
                     </p>
@@ -412,7 +412,7 @@ export default function Dashboard() {
 
             {/* AI Meal Generator */}
             <div className="bg-gray-900 border border-gray-800 rounded-2xl p-6">
-              <h2 className="text-xl font-bold text-white mb-1">🤖 AI Meal Generator</h2>
+              <h2 className="text-xl font-bold text-white mb-1">🤖 Diet Meal Generator</h2>
               <p className="text-gray-400 text-sm mb-4">Get personalised meal suggestions based on your goals.</p>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                 <div>
@@ -448,7 +448,7 @@ export default function Dashboard() {
 
             {/* AI Chat */}
             <div className="bg-gray-900 border border-gray-800 rounded-2xl p-6">
-              <h2 className="text-xl font-bold text-white mb-4">💬 AI Nutrition Assistant</h2>
+              <h2 className="text-xl font-bold text-white mb-4">💬 Your Nutrition Assistant</h2>
               <div className="bg-gray-800 rounded-xl p-4 h-64 overflow-y-auto mb-4 space-y-3">
                 {chatMessages.map((msg, i) => (
                   <div key={i} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
