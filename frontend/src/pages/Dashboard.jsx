@@ -37,13 +37,13 @@ export default function Dashboard() {
   const fullName = localStorage.getItem('full_name');
 
   useEffect(() => {
-      if (!userId) {
-        navigate('/login');
-        return;
-      }
-      loadDashboard();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
+    if (!userId) {
+      navigate('/login');
+      return;
+    }
+    loadDashboard();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   useEffect(() => {
     chatEndRef.current?.scrollIntoView({ behavior: 'smooth' });
