@@ -7,15 +7,12 @@ export default function VerifyEmail() {
   const navigate = useNavigate();
   const [status, setStatus] = useState('verifying');
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
-      const token = searchParams.get('token');
-
+    const token = searchParams.get('token');
     if (!token) {
       setStatus('waiting');
       return;
     }
-
     verifyEmail(token)
       .then(() => {
         setStatus('success');
@@ -24,59 +21,43 @@ export default function VerifyEmail() {
       .catch(() => {
         setStatus('error');
       });
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
-    <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
-      <div className="bg-white rounded-2xl shadow-lg p-10 w-full max-w-md text-center">
+    <div className="min-h-screen bg-gray-950 flex items-center justify-center p-4">
+      <div className="bg-gray-900 border border-gray-800 rounded-2xl p-10 w-full max-w-md text-center">
 
         {status === 'waiting' && (
           <>
             <div className="text-6xl mb-4">📧</div>
-            <h2 className="text-2xl font-bold text-gray-800 mb-2">
-              Check Your Email
-            </h2>
-            <p className="text-gray-500">
-              We sent a verification link to your email address.
-              Click the link to verify your account.
-            </p>
+            <h2 className="text-2xl font-bold text-white mb-2">Check Your Email</h2>
+            <p className="text-gray-400">We sent a verification link to your email. Click it to verify your account.</p>
           </>
         )}
 
         {status === 'verifying' && (
           <>
-            <div className="text-6xl mb-4 animate-spin">⏳</div>
-            <h2 className="text-2xl font-bold text-gray-800">
-              Verifying...
-            </h2>
+            <div className="text-6xl mb-4">⏳</div>
+            <h2 className="text-2xl font-bold text-white">Verifying...</h2>
           </>
         )}
 
         {status === 'success' && (
           <>
             <div className="text-6xl mb-4">✅</div>
-            <h2 className="text-2xl font-bold text-green-600 mb-2">
-              Email Verified!
-            </h2>
-            <p className="text-gray-500">
-              Redirecting you to set up your goals...
-            </p>
+            <h2 className="text-2xl font-bold text-green-400 mb-2">Email Verified!</h2>
+            <p className="text-gray-400">Redirecting you to set up your goals...</p>
           </>
         )}
 
         {status === 'error' && (
           <>
             <div className="text-6xl mb-4">❌</div>
-            <h2 className="text-2xl font-bold text-red-500 mb-2">
-              Verification Failed
-            </h2>
-            <p className="text-gray-500 mb-4">
-              The link may have expired. Please register again.
-            </p>
-            <button
-              onClick={() => navigate('/')}
-              className="bg-green-600 text-white px-6 py-2 rounded-lg hover:bg-green-700"
-            >
+            <h2 className="text-2xl font-bold text-red-400 mb-2">Verification Failed</h2>
+            <p className="text-gray-400 mb-4">The link may have expired. Please register again.</p>
+            <button onClick={() => navigate('/')}
+              className="bg-green-500 text-white px-6 py-2 rounded-xl hover:bg-green-400 transition-all">
               Back to Register
             </button>
           </>
